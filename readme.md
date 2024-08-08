@@ -26,6 +26,12 @@ apt-get install python3-dev
 
 - You need to install cpp compiler as well, you can choose anything. (Example [g++ compiler | https://data-flair.training/blogs/install-cpp/])
 
+- (Optional / Linux) Add extra library.
+  - Eigen (For Vector & Matrices)
+```sh
+apt-get install libeigen3-dev
+```
+
 ## Usage
 
 - Run the script to create a new package
