@@ -4,7 +4,7 @@
 
 Create functions in cpp for python in minutes.
 
-## Install and use
+## Install (Linux)
 
 - install dependencies :
 
@@ -18,6 +18,15 @@ pip install -r requirements.txt
 chmod +x setup_py_cpp.sh
 ./setup_py_cpp.sh
 ```
+
+- You need to add Python dev headers (Note : you might need a specific version depending on your current python version):
+```sh
+apt-get install python3-dev
+```
+
+- You need to install cpp compiler as well, you can choose anything. (Example [g++ compiler | https://data-flair.training/blogs/install-cpp/])
+
+## Usage
 
 - Run the script to create a new package
 
