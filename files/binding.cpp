@@ -14,4 +14,5 @@ PYBIND11_MODULE(%module_name%, m) {
 More infos on : 
 - https://pybind11.readthedocs.io/en/stable/basics.html
 - https://pybind11.readthedocs.io/en/stable/classes.html
+- https://gist.github.com/jiwaszki/adeb35a922b37224087c749eb17bceb2 (example overload with lambdas)
 */
