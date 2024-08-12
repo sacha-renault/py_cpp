@@ -4,7 +4,7 @@ import pybind11
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 
 def get_component_path() -> list:
-    [f"{p}/{p}.cpp" for p in os.listdir() if os.path.isdir(p)]
+    return [f"{p}/{p}.cpp" for p in os.listdir() if os.path.isdir(p)]
 
 ext_modules = [
     Pybind11Extension(
