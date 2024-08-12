@@ -1,6 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "%module_name%.h"
+// %%SETINCLUDES%%
 
 namespace py = pybind11;
 
@@ -11,7 +11,7 @@ PYBIND11_MODULE(%module_name%, m) {
 }
 
 /*
-More infos on : 
+More infos on :
 - https://pybind11.readthedocs.io/en/stable/basics.html
 - https://pybind11.readthedocs.io/en/stable/classes.html
 - https://gist.github.com/jiwaszki/adeb35a922b37224087c749eb17bceb2 (example overload with lambdas)
