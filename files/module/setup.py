@@ -4,11 +4,11 @@ import pybind11
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 
 def get_component_path() -> list:
-    component_path = []
+    component_pathes = []
     for path in os.listdir():
         if os.path.isdir(path) and path != "__pycache__":
-            component_path.append(path)
-    return component_path
+            component_pathes.append(path)
+    return [f"{component_path}/{component_path}.cpp" for component_path in component_pathes]
 
 ext_modules = [
     Pybind11Extension(
