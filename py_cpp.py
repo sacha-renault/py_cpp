@@ -19,11 +19,12 @@ def clean():
 
 
 def copy_and_replace(src_folder: str, src_file: str, dest_folder: str, package_name: str) -> None:
-    print(os.path.join(src_folder, src_file))
     with open(os.path.join(src_folder, src_file), "r") as fp:
         file = fp.read()
 
-    with open(os.path.join(dest_folder, src_file.replace("template", package_name)), "w") as fp:
+    dest = os.path.join(dest_folder, src_file.replace("template", package_name))
+    with open(dest, "w") as fp:
+        print(f"New file added : {dest}")
         fp.write(file.replace("%module_name%", package_name))
 
 
@@ -48,9 +49,15 @@ def add_component(call_dir, package_dir, component_name):
     if not "setup.py" in os.listdir(call_dir):
         raise Exception("This is probably not a cpp module, no setup.py was found")
 
-    component_path = os.path.join(call_dir, component_name)
-    if os.path.isdir(component_path):
-        raise ValueError("component alreay exist")
+    # component path & check if src folder already exist
+    component_path = os.path.join(call_dir, "src")
+    if not os.path.isdir(component_path):
+        os.mkdir(component_path)
+
+    # Check if path already exist
+    dst = os.path.join(component_path, component_name)
+    if os.path.isfile(dst + ".h") or os.path.isfile(dst + ".cpp"):
+        raise ValueError("Component already exist")
 
     # Open binding to add a new dependency
     with open("binding.cpp", "r") as file:
@@ -58,12 +65,11 @@ def add_component(call_dir, package_dir, component_name):
 
     # add includes in in bindings
     with open("binding.cpp", "w") as file:
-        include_statement = f"#include \"{component_name}/{component_name}.h\""
+        include_statement = f"#include \"src/{component_name}.h\""
         new_content = content.replace(BINDING_INCLUDES, f"{include_statement}\n{BINDING_INCLUDES}")
         file.write(new_content)
 
-    # Create dir for comp
-    os.mkdir(component_path)
+    
 
     # Then for other files
     src_folder = os.path.join(package_dir, "files/component")
@@ -78,21 +84,24 @@ def main(args):
     # Where the package is located
     package_dir = os.path.dirname(__file__)
 
-    if args.clean:
-        print("Cleaning the build environment")
-        clean()
+    if args.clean or args.build:
+        if args.clean:
+            print("Cleaning the build environment")
+            clean()
 
-    if args.build:
-        print("Building the project")
-        build()
+        if args.build:
+            print("Building the project")
+            build()
 
-    if args.module != "":
-        print("Creating new artifacts")
-        create_module(call_dir, package_dir, args.module)
+    else:
+        if args.module != "":
+            print("Creating new artifacts")
+            create_module(call_dir, package_dir, args.module)
 
-    if args.component != "":
-        print("Creating new artifacts")
-        add_component(call_dir, package_dir, args.component)
+
+        elif args.component != "":
+            print("Creating new artifacts")
+            add_component(call_dir, package_dir, args.component)
 
 
 if __name__ == "__main__":
