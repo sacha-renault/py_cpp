@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the alias name and the command to run your Python script
-ALIAS_NAME="py_cpp"
+ALIAS_NAME="pycpp"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT_PATH="$SCRIPT_DIR/py_cpp.py"
 
