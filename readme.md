@@ -39,19 +39,19 @@ apt-get install libeigen3-dev
 - Run the script to create a new package
 
 ```sh
-py_cpp --module my_module_name # create a new module
+pycpp --module my_module_name # create a new module
 cd my_module_name # Need to be inside of the folder to add new component.
-py_cpp --component my_component # add a new component
+pycpp --component my_component # add a new component
 ```
 
 - Run the script to build
 
 ```sh
-py_cpp --clean --build # Need to be inside of the folder to build the package.
+pycpp --clean --build # Need to be inside of the folder to build the package.
 ```
 
 - You can also add only a header file :
 
 ```sh
-py_cpp --header my_header # add a new header
+pycpp --header my_header # add a new header
 ```
