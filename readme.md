@@ -38,11 +38,12 @@ apt-get install libeigen3-dev
 
 ```sh
 py_cpp --module my_module_name # create a new module
+cd my_module_name # Need to be inside of the folder to add new component.
 py_cpp --component my_component # add a new component
 ```
 
 - Run the script to build
 
 ```sh
-py_cpp --clean --build
+py_cpp --clean --build # Need to be inside of the folder to build the package.
 ```
