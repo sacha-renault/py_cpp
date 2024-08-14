@@ -20,6 +20,7 @@ chmod +x setup_py_cpp.sh
 ```
 
 - You need to add Python dev headers (Note : you might need a specific version depending on your current python version):
+
 ```sh
 apt-get install python3-dev
 ```
@@ -28,6 +29,7 @@ apt-get install python3-dev
 
 - (Optional / Linux) Add extra library.
   - Eigen (For Vector & Matrices)
+
 ```sh
 apt-get install libeigen3-dev
 ```
@@ -46,4 +48,10 @@ py_cpp --component my_component # add a new component
 
 ```sh
 py_cpp --clean --build # Need to be inside of the folder to build the package.
+```
+
+- You can also add only a header file :
+
+```sh
+py_cpp --header my_header # add a new header
 ```

@@ -45,7 +45,7 @@ def create_module(call_dir, package_dir, package_name) -> None:
         copy_and_replace(src_folder, file, package_path, package_name)
 
 
-def add_component(call_dir, package_dir, component_name):
+def add_component(call_dir, package_dir, component_name, header_only = False):
     if not "setup.py" in os.listdir(call_dir):
         raise Exception("This is probably not a cpp module, no setup.py was found")
 
@@ -67,14 +67,15 @@ def add_component(call_dir, package_dir, component_name):
     with open("binding.cpp", "w") as file:
         include_statement = f"#include \"src/{component_name}.h\""
         new_content = content.replace(BINDING_INCLUDES, f"{include_statement}\n{BINDING_INCLUDES}")
-        file.write(new_content)
-
-    
+        file.write(new_content)    
 
     # Then for other files
     src_folder = os.path.join(package_dir, "files/component")
-    for file in os.listdir(src_folder):
-        copy_and_replace(src_folder, file, component_path, component_name)
+    if not header_only:
+        for file in os.listdir(src_folder):
+            copy_and_replace(src_folder, file, component_path, component_name)
+    else:
+        copy_and_replace(src_folder, "template.h", component_path, component_name)
 
 
 def main(args):
@@ -103,6 +104,10 @@ def main(args):
             print("Creating new artifacts")
             add_component(call_dir, package_dir, args.component)
 
+        elif args.header != "":
+            print("Creating new artifacts")
+            add_component(call_dir, package_dir, args.header, True)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -110,6 +115,7 @@ if __name__ == "__main__":
     parser.add_argument("--build", action="store_true", help="Build the project")
     parser.add_argument("--module", default="", help="create new module with the specified name")
     parser.add_argument("--component", default="", help="create new compoenent within the module with the specified name")
+    parser.add_argument("--header", default="", help="create new header within the module with the specified name")
 
     args = parser.parse_args()
 
