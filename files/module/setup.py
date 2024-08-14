@@ -3,17 +3,18 @@ from setuptools import setup
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 
-def get_component_path() -> list:
+def get_cpp_files() -> list:
     component_pathes = []
-    for path in os.listdir():
-        if os.path.isdir(path) and path != "__pycache__":
-            component_pathes.append(path)
-    return [f"{component_path}/{component_path}.cpp" for component_path in component_pathes]
+    for dir,_, files in os.walk("."):
+        for file in files:
+            if file.endswith(".cpp"):
+                component_pathes.append(os.path.join(dir, file))
+    return component_pathes
 
 ext_modules = [
     Pybind11Extension(
         "%module_name%",
-        ["binding.cpp"] + get_component_path(),
+        get_cpp_files(),
         include_dirs=[pybind11.get_include()],
     ),
 ]
