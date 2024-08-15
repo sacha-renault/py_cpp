@@ -22,7 +22,8 @@ if __name__ == "__main__":
     parser.add_argument("--module", default="", help="create new module with the specified name")
     parser.add_argument("--component", default="", help="create new compoenent within the module with the specified name")
     parser.add_argument("--header", default="", help="create new header within the module with the specified name")
-    parser.add_argument("--openmp", action="store_true", help="Show if openmp is available")
+    parser.add_argument("--setopenmp", action="store_true", help="Setopenmp to available")
+    parser.add_argument("--setversion", default="", help="Change version of package")
 
     args = parser.parse_args()
 

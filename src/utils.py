@@ -1,6 +1,5 @@
 import os
-import sys
-import subprocess
+from typing import List, Optional
 import shutil
 
 from .configuration import Config
@@ -31,7 +30,6 @@ def clean():
     for file in to_delete:
         os.remove(file)
         print(f"Clean file: {file}")
-
 
 
 def copy_and_replace(src_folder: str, src_file: str, dest_folder: str, package_name: str) -> None:
@@ -125,3 +123,13 @@ def add_component(call_dir, package_dir, component_name, header_only = False):
             copy_and_replace(src_folder, file, component_path, component_name)
     else:
         copy_and_replace(src_folder, "template.h", component_path, component_name)
+
+
+def safe_list_extend(base_list: Optional[List[str]], new_items: List[str]) -> List:
+    if base_list is None:
+        return new_items
+    else:
+        for item in new_items:
+            if item not in base_list:
+                base_list.append(item)
+        return base_list

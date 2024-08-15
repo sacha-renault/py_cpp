@@ -1,8 +1,11 @@
-from .utils import clean, create_module, add_component
+from .utils import clean, create_module, add_component, safe_list_extend
 from .build import build
 from .openmp import has_openmp, get_openmp_flags
+from .configuration import Config
+from .data import __CONFIG_FILE_NAME__
 
 def main(args, call_dir: str, package_dir: str):
+    # First check if build or clean 
     if args.clean or args.build:
         if args.clean:
             print("Cleaning the build environment")
@@ -12,11 +15,11 @@ def main(args, call_dir: str, package_dir: str):
             print("Building the project")
             build(call_dir, "binding.cpp")
 
+    # Else (because cant add a module after build)
     elif args.module or args.component or args.header:
         if args.module != "":
             print("Creating new artifacts")
             create_module(call_dir, package_dir, args.module)
-
 
         elif args.component != "":
             print("Creating new artifacts")
@@ -26,14 +29,23 @@ def main(args, call_dir: str, package_dir: str):
             print("Creating new artifacts")
             add_component(call_dir, package_dir, args.header, True)
     
+    # Else (update the config)
     else:
-        if args.openmp:
+        config = Config.load(__CONFIG_FILE_NAME__)
+
+        # Set openmp
+        if args.setopenmp:
             if not has_openmp():
                 print("OPEN MP NOT AVAILABLE")
             else:
-                kwargs = {}
                 comp, link = get_openmp_flags()
-                kwargs["extra_compile_args"] = comp
-                kwargs["extra_link_args"] = link
-                print("ADD THIS TO YOUR SETUP.PY IN Pybind11Extension")
-                print(f"**{kwargs}")
+                config.extra_compile_args = safe_list_extend(config.extra_compile_args, comp)
+                config.extra_link_args = safe_list_extend(config.extra_link_args, link)
+                config.save(__CONFIG_FILE_NAME__)
+        
+        elif args.setversion:
+            config.version = args.setversion
+            config.save(__CONFIG_FILE_NAME__)
+        
+        else:
+            raise ValueError("Unknown cmd name")
