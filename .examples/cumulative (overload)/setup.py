@@ -1,6 +1,12 @@
+import argparse
+import json
 from setuptools import setup
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension, build_ext
+
+parser = argparse.ArgumentParser()
+args = parser.parse_args()
+print(args)
 
 ext_modules = [
     Pybind11Extension(
