@@ -36,7 +36,7 @@ def main(args, call_dir: str, package_dir: str):
         # Set openmp
         if args.setopenmp:
             if not has_openmp():
-                print("OPEN MP NOT AVAILABLE")
+                raise Exception("OPEN MP NOT AVAILABLE")
             else:
                 comp, link = get_openmp_flags()
                 config.extra_compile_args = safe_list_extend(config.extra_compile_args, comp)

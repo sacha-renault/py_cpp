@@ -55,3 +55,15 @@ py_cpp --clean --build # Need to be inside of the folder to build the package.
 ```sh
 py_cpp --header my_header # add a new header
 ```
+
+## Arguments
+
+| Argument       | Action             | Default | Description                                                                      |
+| -------------- | ------------------ | ------- | -------------------------------------------------------------------------------- |
+| `--clean`      | set flag to `True` | `False` | Clean the build environment                                                      |
+| `--build`      | set flag to `True` | `False` | Build the project                                                                |
+| `--module`     | N/A                | `""`    | Create a new module with the specified name                                      |
+| `--component`  | N/A                | `""`    | Create a new component within the module with the specified name                 |
+| `--header`     | N/A                | `""`    | Create a new header within the module with the specified name                    |
+| `--setopenmp`  | set flag to `True` | `False` | Set OpenMP to available if open mp isn't available, an exception will be raised. |
+| `--setversion` | N/A                | `""`    | Change the version of the package                                                |
