@@ -5,26 +5,24 @@ import shutil
 from .configuration import Config
 from .data import __BINDING_INCLUDES__, __CONFIG_FILE_NAME__
 
+def try_remove_dir(dir_path: str) -> None:
+    if os.path.isdir(dir_path):
+        shutil.rmtree(dir_path)
+        print(f"Clean fodler {dir_path}/")
 
 def clean():
     """Clean the previous build.
     """
     # first, remove build
-    if os.path.isdir("build"):
-        print(f"Clean fodler build/")
-        shutil.rmtree("build")
-
-    # first, remove temp
-    if os.path.isdir("temp"):
-        print(f"Clean fodler temp/")
-        shutil.rmtree("temp")
+    for directory in ["build", "temp", "tmp", "__pycache__"]:
+        try_remove_dir(directory)
 
     # find all .o and all .so
     to_delete = []
-    for dir, _, files in os.walk("."):
+    for directory, _, files in os.walk("."):
         for file in files:
             if file.endswith(".o") or file.endswith(".so"):
-                to_delete.append(os.path.join(dir, file))
+                to_delete.append(os.path.join(directory, file))
     
     # iterate over the to delete file to end
     for file in to_delete:

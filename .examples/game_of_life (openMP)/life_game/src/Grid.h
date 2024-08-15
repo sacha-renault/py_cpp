@@ -20,3 +20,11 @@ public:
     void next();
     void next(int numSteps);
 };
+
+//template <typename T>
+int function123(Eigen::MatrixXi& arg1, const int* arg2);
+
+template <typename T>
+int function321(const Eigen::MatrixXi& arg1, const T* arg2);
+template function321<int>(const Eigen::MatrixXi& arg1, const int* arg2);
+template function321<float>(const Eigen::MatrixXi& arg1, const float* arg2);
