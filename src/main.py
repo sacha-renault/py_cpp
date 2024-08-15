@@ -1,7 +1,8 @@
-from .utils import clean, build, create_module, add_component
+from .utils import clean, create_module, add_component
+from .build import build
 from .openmp import has_openmp, get_openmp_flags
 
-def main(args, call_dir, package_dir):
+def main(args, call_dir: str, package_dir: str):
     if args.clean or args.build:
         if args.clean:
             print("Cleaning the build environment")
@@ -9,7 +10,7 @@ def main(args, call_dir, package_dir):
 
         if args.build:
             print("Building the project")
-            build()
+            build(call_dir, "binding.cpp")
 
     elif args.module or args.component or args.header:
         if args.module != "":
