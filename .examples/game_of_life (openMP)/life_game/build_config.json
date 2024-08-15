@@ -1,0 +1,12 @@
+{
+    "name": "life_game",
+    "version": "3.0",
+    "openmp": 0,
+    "extra_compile_args": [
+        "-fopenmp"
+    ],
+    "extra_link_args": [
+        "-fopenmp"
+    ],
+    "include_dirs": ["/usr/include/eigen3"]
+}

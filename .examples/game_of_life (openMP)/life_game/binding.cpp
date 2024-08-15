@@ -1,6 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "Grid/Grid.h"
+#include "src/Grid.h"
 // %%SETINCLUDES%%
 
 namespace py = pybind11;
