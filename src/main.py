@@ -1,3 +1,4 @@
+import tempfile
 from .utils import clean, create_module, add_component, safe_list_extend
 from .build import build
 from .openmp import has_openmp, get_openmp_flags
@@ -17,7 +18,11 @@ def main(args, call_dir: str, package_dir: str):
             build(call_dir, "binding.cpp")
         
         elif args.auto_build:
-            auto_bindings(call_dir, package_dir)
+            content = auto_bindings(call_dir, package_dir)
+            with tempfile.NamedTemporaryFile('w+', suffix=".cpp", delete=True, dir='.') as tmp: 
+                tmp.write(content)
+                tmp.seek(0)
+                build(call_dir, tmp.name)
 
     # Else (because cant add a module after build)
     elif args.module or args.component or args.header:

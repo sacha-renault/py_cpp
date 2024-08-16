@@ -4,6 +4,7 @@ from glob import glob
 from typing import List
 import warnings
 from collections import defaultdict
+from .templates import Template
 
 from clang.cindex import CursorKind
 
@@ -52,8 +53,9 @@ def prepare_binding_template(package_dir: str):
     return content
 
 def get_function_binding(functions: List[CxxFunction], 
-                         template: str, 
+                         render_arg: bool, 
                          naming: str,
+                         src_or_namespace: str = "",
                          indent: str = "\t") -> str:
     # init a dict to count number of occurence
     name_count = defaultdict(int)
@@ -72,20 +74,23 @@ def get_function_binding(functions: List[CxxFunction],
             non_overloaded.append(func)
 
     # function definition
-    func_binding = f"{indent}// FUNCTION DEFINITION \n"
+    func_binding = f"{indent}// {naming} DEFINITION \n"
 
     # NO OVERLOAD
     for func in functions:
         py_f_name = pascal_case_to_snake_case(func.name)
+        cpp_ref_name = f"&{src_or_namespace}{func.name}"
+        template = Template()
         if isinstance(func, CxxTemplateFunction):
             warnings.warn("Template function aren't supported yet.")
         elif isinstance(func, CxxFunction):
-
+            template.fill(f"\"{py_f_name}\"")
             if name_count[func.name] > 1: # then overload
-                func_binding += (f"{indent}m.def({py_f_name}, " 
-                                 f"py::overload_cast<{func.get_signature_string()}>(&{func.name}));\n")
+                template.fill(
+                    f"py::overload_cast<{func.get_signature_string()}>({cpp_ref_name})")
             else:
-                func_binding += f"{indent}m.def({py_f_name}, &{func.name});\n"        
+                template.fill(cpp_ref_name)  
+            func_binding += template.render(render_arg, indent)     
         
     func_binding += "\n\n" # let some space after functino bindings are done
     return func_binding
@@ -95,10 +100,10 @@ def get_class_binding(classes: List[CxxClass]) -> str:
     class_binding = "\t// CLASS DEFINITION \n"
     for class_ in classes:
         class_binding += f"\tpy::class_<{class_.name}>(m, \"{class_.name}\")\n"
-        class_binding += get_function_binding(class_.methods, None, "METHODS", "\t\t")
+        class_binding += get_function_binding(class_.methods, True, "METHODS", class_.name + "::","\t\t") + ";"
     return class_binding
 
-def auto_bindings(call_dir: str, package_dir: str) -> None:
+def auto_bindings(call_dir: str, package_dir: str) -> str:
     # Get template content
     content = prepare_binding_template(package_dir)
 
@@ -127,7 +132,7 @@ def auto_bindings(call_dir: str, package_dir: str) -> None:
     
     # make function binding
     content = content.replace(
-        __BINDING_POSITION__, f"{get_class_binding(classes, '')}\n")
+        __BINDING_POSITION__, f"{get_class_binding(classes)}\n")
 
     # class definition
-    print(content)
+    return content

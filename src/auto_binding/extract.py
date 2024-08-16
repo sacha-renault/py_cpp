@@ -41,12 +41,13 @@ def extract_all(header_file, *args) -> Tuple[List[CxxFunction], List[CxxClass]]:
         elif node.kind == CursorKind.CLASS_DECL:
             class_ = CxxClass(node, node.spelling)
             for child in node.get_children():
-                if node.spelling == "func1":
-                    print(node.kind)
                 if (child.kind == CursorKind.CXX_METHOD or
                     node.kind == CursorKind.FUNCTION_TEMPLATE):
                     method = parse_func(child)
                     class_.add_methods(method)
+                # TODO extract constructor ! 
+
+                
             classes.append(class_)
         
         # Continue visiting other nodes
