@@ -4,7 +4,7 @@ from glob import glob
 from typing import List
 import warnings
 from collections import defaultdict
-from .templates import Template
+from .templates import BindingTemplate
 
 from clang.cindex import CursorKind
 
@@ -61,43 +61,47 @@ def get_function_binding(functions: List[CxxFunction],
     
     for func in functions:
         name_count[func.name] += 1
-    
-    # Init the two sublist
-    overloaded = []
-    non_overloaded = []
-    
-    for func in functions:
-        if name_count[func.name] > 1:
-            overloaded.append(func)
-        else:
-            non_overloaded.append(func)
 
     # function definition
     func_binding = f"{indent}// {naming} DEFINITION \n"
 
     # NO OVERLOAD
     for func in functions:
+        # Get name in snake case
         py_f_name = pascal_case_to_snake_case(func.name)
+
+        # Get the ref of the cpp function
         cpp_ref_name = f"&{src_or_namespace}{func.name}"
-        template = Template()
+
+        # init a binding template for the function
+        template = BindingTemplate()
+
+        # If template idk what to do still
         if isinstance(func, CxxTemplateFunction):
+            # TODO
             warnings.warn("Template function aren't supported yet.")
 
+        # If constructor we call py::init
         elif isinstance(func, CxxConstructor):
-            template.fill(f"py::init<{func.get_signature_string()}>()")
-            func_binding += template.render(render_arg, indent)
+            template.set_constructor(func.get_signature_string())
 
+        # TODO
+        # Detect when operator 
+        # create a mapping and use template.set_function
+        # with the correct python magic func 
+        # __add__, __sub__ ...
+
+        # else simple function
         elif isinstance(func, CxxFunction):
-            template.fill(f"\"{py_f_name}\"")
             if name_count[func.name] > 1: # then overload
-                template.fill(
-                    f"py::overload_cast<{func.get_signature_string()}>({cpp_ref_name})")
+                template.set_overload_function(py_f_name, cpp_ref_name, func.get_signature_string())
             else:
-                template.fill(cpp_ref_name)  
-            func_binding += template.render(render_arg, indent)
-        
+                template.set_function(py_f_name, cpp_ref_name)
+
         else:
             raise ValueError("NOT A KNOWN TYPE")
+        
+        func_binding += template.render_as(render_arg, indent)
         
     func_binding += "\n\n" # let some space after functino bindings are done
     return func_binding
