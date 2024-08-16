@@ -10,7 +10,7 @@ from clang.cindex import CursorKind
 
 from .extract import extract_all
 from .utils import pascal_case_to_snake_case
-from .types import CxxFunction, CxxTemplateFunction, CxxClass
+from .types import CxxFunction, CxxTemplateFunction, CxxClass, CxxConstructor
 from ..configuration import Config
 from ..data import (__BINDING_TEMPLATE_PATH__, 
                     __HEADERS_PATH__,
@@ -30,7 +30,6 @@ def get_func_and_classes():
 
         # Seek back to start
         tmp.seek(0)
-        print(tmp.read())
 
         # Into parser
         functions, classes = extract_all(tmp.name, '-std=c++17')
@@ -83,6 +82,11 @@ def get_function_binding(functions: List[CxxFunction],
         template = Template()
         if isinstance(func, CxxTemplateFunction):
             warnings.warn("Template function aren't supported yet.")
+
+        elif isinstance(func, CxxConstructor):
+            template.fill(f"py::init<{func.get_signature_string()}>()")
+            func_binding += template.render(render_arg, indent)
+
         elif isinstance(func, CxxFunction):
             template.fill(f"\"{py_f_name}\"")
             if name_count[func.name] > 1: # then overload
@@ -90,7 +94,10 @@ def get_function_binding(functions: List[CxxFunction],
                     f"py::overload_cast<{func.get_signature_string()}>({cpp_ref_name})")
             else:
                 template.fill(cpp_ref_name)  
-            func_binding += template.render(render_arg, indent)     
+            func_binding += template.render(render_arg, indent)
+        
+        else:
+            raise ValueError("NOT A KNOWN TYPE")
         
     func_binding += "\n\n" # let some space after functino bindings are done
     return func_binding

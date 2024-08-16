@@ -18,6 +18,9 @@ class CxxFunction(CxxBase):
     def get_signature_string(self) -> str:
         return ', '.join([tokens_to_string(s) for s in self.signature])
     
+class CxxConstructor(CxxFunction):
+    pass
+    
 class CxxTemplateFunction(CxxFunction):
     def __init__(self, 
                  node,

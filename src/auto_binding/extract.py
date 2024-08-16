@@ -1,14 +1,23 @@
 from typing import List, Tuple
 import clang.cindex
 from clang.cindex import CursorKind
-from .types import CxxClass, CxxFunction, CxxTemplateFunction
+from .types import CxxClass, CxxFunction, CxxTemplateFunction, CxxConstructor
 
 clang.cindex.Config.set_library_file('/usr/lib/llvm-12/lib/libclang-12.so')  # Set this to your actual path
 
 
 def parse_func(node):
-        if node.kind == CursorKind.FUNCTION_DECL or node.kind == CursorKind.CXX_METHOD:
+        if (node.kind == CursorKind.FUNCTION_DECL or 
+            node.kind == CursorKind.CXX_METHOD):
+
+            # Get function
             func = CxxFunction(
+                node,
+                node.spelling, 
+                [list(param.get_tokens()) for param in node.get_arguments()])
+            
+        elif node.kind == node.kind == CursorKind.CONSTRUCTOR:
+            func = CxxConstructor(
                 node,
                 node.spelling, 
                 [list(param.get_tokens()) for param in node.get_arguments()])
@@ -42,11 +51,12 @@ def extract_all(header_file, *args) -> Tuple[List[CxxFunction], List[CxxClass]]:
             class_ = CxxClass(node, node.spelling)
             for child in node.get_children():
                 if (child.kind == CursorKind.CXX_METHOD or
-                    node.kind == CursorKind.FUNCTION_TEMPLATE):
+                    node.kind == CursorKind.FUNCTION_TEMPLATE or
+                    child.kind == CursorKind.CONSTRUCTOR):
+
+                    # Get method and add to class
                     method = parse_func(child)
                     class_.add_methods(method)
-                # TODO extract constructor ! 
-
                 
             classes.append(class_)
         
