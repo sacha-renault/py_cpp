@@ -94,7 +94,7 @@ def get_function_binding(functions: List[CxxFunction],
         # else simple function
         elif isinstance(func, CxxFunction):
             if name_count[func.name] > 1: # then overload
-                template.set_overload_function(py_f_name, cpp_ref_name, func.get_signature_string())
+                template.set_overloaded_function(py_f_name, cpp_ref_name, func.get_signature_string())
             else:
                 template.set_function(py_f_name, cpp_ref_name)
 

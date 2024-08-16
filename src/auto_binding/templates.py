@@ -10,7 +10,7 @@ class BindingTemplate:
             self.value += ", " + ", ".join(args)
         self.value += ")"
 
-    def set_overload_function(self, function_name: str, cpp_ref: str, signature_str: str, *args) -> None:
+    def set_overloaded_function(self, function_name: str, cpp_ref: str, signature_str: str, *args) -> None:
         self.set_function(function_name, f"py::overload_cast<{signature_str}>({cpp_ref})", *args)
 
     def set_constructor(self, signature_str: str, *_):
