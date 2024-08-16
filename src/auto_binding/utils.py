@@ -1,5 +1,6 @@
 from typing import List, Tuple
 from clang.cindex import TokenKind, CursorKind, Cursor
+import re
 
 def typename_template_to_string(tokens: List[Cursor]):
     return tokens[1].spelling
@@ -28,4 +29,7 @@ def split_template_normal(types: List[List[Cursor]]) -> Tuple[List[List[Cursor]]
             non_template.append(tokens)
     
     return template, non_template
-    
+
+def pascal_case_to_snake_case(func_name: str) -> str:
+    snake_case_name = re.sub(r'(?<!^)(?=[A-Z])', '_', func_name).lower()
+    return snake_case_name

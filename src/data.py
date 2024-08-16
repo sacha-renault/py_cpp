@@ -1,2 +1,6 @@
 __BINDING_INCLUDES__ = "// %%SETINCLUDES%%"
+__BINDING_POSITION__ = "// %%SETBINDINGS%%"
 __CONFIG_FILE_NAME__ = "build_config.json"
+__BINDING_TEMPLATE_PATH__ = "files/template/auto_binding.cpp"
+__HEADERS_PATH__ = "src/*.h"
+__SOURCES_PATH__ = "src/*.h"

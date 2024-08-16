@@ -3,10 +3,11 @@ from .build import build
 from .openmp import has_openmp, get_openmp_flags
 from .configuration import Config
 from .data import __CONFIG_FILE_NAME__
+from .auto_binding.create_binding import auto_bindings
 
 def main(args, call_dir: str, package_dir: str):
     # First check if build or clean 
-    if args.clean or args.build:
+    if args.clean or args.build or args.auto_build:
         if args.clean:
             print("Cleaning the build environment")
             clean()
@@ -14,6 +15,9 @@ def main(args, call_dir: str, package_dir: str):
         if args.build:
             print("Building the project")
             build(call_dir, "binding.cpp")
+        
+        elif args.auto_build:
+            auto_bindings(call_dir, package_dir)
 
     # Else (because cant add a module after build)
     elif args.module or args.component or args.header:

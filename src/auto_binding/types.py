@@ -1,14 +1,22 @@
 import typing
 from .utils import tokens_to_string, split_template_normal, typename_template_to_string
 
-class CxxFunction:
+class CxxBase:
+    @property
+    def path(self) -> str:
+        return self.node.location.file.name
+
+class CxxFunction(CxxBase):
     def __init__(self, node, name: str, signature = None) -> None:
         self.node = node
         self.name = name
         self.signature = signature if signature is not None else []
     
     def __str__(self) -> str:
-        return f"<Function: {self.name}({', '.join([tokens_to_string(s) for s in self.signature])})>"
+        return f"<Function: {self.name}({self.get_signature_string()})>"
+    
+    def get_signature_string(self) -> str:
+        return ', '.join([tokens_to_string(s) for s in self.signature])
     
 class CxxTemplateFunction(CxxFunction):
     def __init__(self, 
@@ -23,7 +31,7 @@ class CxxTemplateFunction(CxxFunction):
         return (f"<Function: {self.name}<{', '.join([typename_template_to_string(s) for s in self.template_param])}>"
                 f"({', '.join([tokens_to_string(s) for s in self.signature])})>")
 
-class CxxClass:
+class CxxClass(CxxBase):
     def __init__(self, node, name: str) -> None:
         self.node = node
         self.name = name

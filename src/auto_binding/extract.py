@@ -1,8 +1,7 @@
+from typing import List, Tuple
 import clang.cindex
 from clang.cindex import CursorKind
-import sys
-sys.path.insert(0, "/home/wsl/Projects_code/py_cpp/src/")
-from auto_binding.types import CxxClass, CxxFunction, CxxTemplateFunction
+from .types import CxxClass, CxxFunction, CxxTemplateFunction
 
 clang.cindex.Config.set_library_file('/usr/lib/llvm-12/lib/libclang-12.so')  # Set this to your actual path
 
@@ -25,10 +24,10 @@ def parse_func(node):
         return func
 
 
-def extract_all(header_file):
+def extract_all(header_file, *args) -> Tuple[List[CxxFunction], List[CxxClass]]:
     index = clang.cindex.Index.create()
 
-    translation_unit = index.parse(header_file, args=['-std=c++17'])
+    translation_unit = index.parse(header_file, args=args)
 
     functions = []
     classes = []
@@ -57,25 +56,3 @@ def extract_all(header_file):
     visit_node(translation_unit.cursor)
     return functions, classes
 
-# Example usage
-header_file = "/home/wsl/Projects_code/py_cpp/.examples/cumulative (overload)/binding.cpp"
-header_file = "/home/wsl/Projects_code/py_cpp/.examples/game_of_life (openMP)/life_game/binding.cpp"
-
-functions, classes = extract_all(header_file)
-# results = extract_all("/home/wsl/Projects_code/py_cpp/.examples/game_of_life (openMP)/life_game/src/Grid.cpp")
-
-print("Functions:")
-for func in functions:
-    print(f"  {func}")
-
-print("\nClasses and Methods:")
-for class_ in classes:
-    print(f"Class: {class_.name}")
-    print("  Methods:")
-    for method in class_.methods:
-        print(f"    {method}")
-#     print("  Public Methods:")
-#     for pub_method in details['public_methods']:
-#         print(f"    {pub_method}")
-
-    
