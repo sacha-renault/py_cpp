@@ -19,12 +19,14 @@ public:
     // functional
     void next();
     void next(int numSteps);
+
+    int func1();
 };
 
-//template <typename T>
-int function123(Eigen::MatrixXi& arg1, const int* arg2);
+template <typename T1, typename T2>
+int function123(const T1& arg1, T2* arg2);
 
-template <typename T>
-int function321(const Eigen::MatrixXi& arg1, const T* arg2);
-template function321<int>(const Eigen::MatrixXi& arg1, const int* arg2);
-template function321<float>(const Eigen::MatrixXi& arg1, const float* arg2);
+int function321(const Eigen::MatrixXi<int> & arg1, int* arg2);
+
+
+
