@@ -3,9 +3,6 @@ from glob import glob
 from typing import List
 import warnings
 from collections import defaultdict
-
-from clang.cindex import CursorKind
-
 from .templates import BindingTemplate
 from .utils import pascal_case_to_snake_case
 from .extract import get_func_and_classes
@@ -17,7 +14,15 @@ from ..data import (__BINDING_TEMPLATE_PATH__,
                     __BINDING_POSITION__,
                     __CONFIG_FILE_NAME__)
 
-def prepare_binding_template(package_dir: str):
+def prepare_binding_template(package_dir: str) -> str:
+    """get the template of the binding.cpp file as string
+
+    Args:
+        package_dir (str): the path where py_cpp is installed
+
+    Returns:
+        str: the content of the template file
+    """
     path = os.path.join(package_dir, __BINDING_TEMPLATE_PATH__)
     with open(path, "r") as file:
         content = file.read()
@@ -28,6 +33,22 @@ def get_function_binding(functions: List[CxxFunction],
                          naming: str,
                          src_or_namespace: str = "",
                          indent: str = "\t") -> str:
+    """Create the binding (as string) for the CxxFunction passed as argument.
+
+    Args:
+        functions (List[CxxFunction]): list of function that need bindings
+        render_arg (bool): render argument (as method or as function)
+        naming (str): naming for the comment
+        src_or_namespace (str, optional): TODO will be removed over filed in CxxFunction. 
+        Defaults to "".
+        indent (str, optional): indent. Defaults to "\t".
+
+    Raises:
+        ValueError: Unknown CxxFunction subclass
+
+    Returns:
+        str: the string representation of the binding.
+    """
     # init a dict to count number of occurence
     name_count = defaultdict(int)
     
@@ -80,6 +101,14 @@ def get_function_binding(functions: List[CxxFunction],
     return func_binding
 
 def get_class_binding(classes: List[CxxClass]) -> str:
+    """Create the binding (as string) for the CxxClass passed as argument.
+
+    Args:
+        classes (List[CxxClass]): list of class that needs bindings
+
+    Returns:
+        str: the string representation of the binding.
+    """
     # function definition
     class_binding = "\t// CLASS DEFINITION \n"
     for class_ in classes:
@@ -87,9 +116,18 @@ def get_class_binding(classes: List[CxxClass]) -> str:
         class_binding += get_function_binding(class_.methods, True, "METHODS", class_.name + "::","\t\t") + ";"
     return class_binding
 
-def auto_bindings(call_dir: str, package_dir: str) -> str:
+def auto_bindings(call_dir: str, pycpp_dir: str) -> str:
+    """function that wraps all the autobinding process
+
+    Args:
+        call_dir (str): where the cmd is called.
+        package_dir (str): where pycpp is located.
+
+    Returns:
+        str: the string content for the binding.cpp file.
+    """
     # Get template content
-    content = prepare_binding_template(package_dir)
+    content = prepare_binding_template(pycpp_dir)
 
     # include
     files = glob(__HEADERS_PATH__)

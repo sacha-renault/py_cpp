@@ -7,6 +7,11 @@ from .configuration import Config
 from .data import __BINDING_INCLUDES__, __CONFIG_FILE_NAME__, __BINDING_PATH__
 
 def try_remove_dir(dir_path: str) -> None:
+    """Try to remove a folder, does nothing if not existing.
+
+    Args:
+        dir_path (str): path of dir to remove.
+    """
     if os.path.isdir(dir_path):
         shutil.rmtree(dir_path)
         print(f"Clean fodler {dir_path}/")
@@ -49,7 +54,7 @@ def copy_and_replace(src_folder: str, src_file: str, dest_folder: str, package_n
         fp.write(file.replace("%module_name%", package_name))
 
 
-def create_module(call_dir, package_dir, package_name) -> None:
+def create_module(call_dir, pycpp_location, package_name) -> None:
     """Create a new module by creating a directory and copying files inside.
     Also create a config.json
 
@@ -70,7 +75,7 @@ def create_module(call_dir, package_dir, package_name) -> None:
 
 
     # Then for other files
-    src_folder = os.path.join(package_dir, "files/module")
+    src_folder = os.path.join(pycpp_location, "files/module")
     for file in os.listdir(src_folder):
         copy_and_replace(src_folder, file, package_path, package_name)
 
@@ -79,12 +84,12 @@ def create_module(call_dir, package_dir, package_name) -> None:
     config.save(os.path.join(call_dir, package_name, __CONFIG_FILE_NAME__))
 
 
-def add_component(call_dir, package_dir, component_name, header_only = False):
+def add_component(call_dir, pycpp_location, component_name, header_only = False):
     """Add a component into a module
 
     Args:
         call_dir (str): where the cmd is called
-        package_dir (str): location of this package (py_cpp)
+        pycpp_location (str): location of this package (py_cpp)
         component_name (str): name of the component
         header_only (bool, optional): if true only add the header. Defaults to False.
 
@@ -116,7 +121,7 @@ def add_component(call_dir, package_dir, component_name, header_only = False):
         file.write(new_content)    
 
     # Then for other files
-    src_folder = os.path.join(package_dir, "files/component")
+    src_folder = os.path.join(pycpp_location, "files/component")
     if not header_only:
         for file in os.listdir(src_folder):
             copy_and_replace(src_folder, file, component_path, component_name)
@@ -125,6 +130,15 @@ def add_component(call_dir, package_dir, component_name, header_only = False):
 
 
 def safe_list_extend(base_list: Optional[List[str]], new_items: List[str]) -> List:
+    """Safely extend a base_list with new_items (even if base_list is NoneType)
+
+    Args:
+        base_list (Optional[List[str]]): List object (can be None)
+        new_items (List[str]): new_items
+
+    Returns:
+        List: new_items concateneted to base list
+    """
     if base_list is None:
         return new_items
     else:
@@ -134,6 +148,11 @@ def safe_list_extend(base_list: Optional[List[str]], new_items: List[str]) -> Li
         return base_list
     
 def move_to_backup(file_name: str) -> None:
+    """Move a file to the .backup folder
+
+    Args:
+        file_name (str): file to move.
+    """
     # first check if .backup folder exist
     if not os.path.isdir(".backup"):
         os.mkdir(".backup")

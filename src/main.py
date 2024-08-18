@@ -6,7 +6,7 @@ from .configuration import Config
 from .data import __CONFIG_FILE_NAME__, __BINDING_PATH__
 from .auto_binding.create_binding import auto_bindings
 
-def main(args, call_dir: str, package_dir: str):
+def main(args, call_dir: str, pycpp_location: str):
     # First check if build or clean 
     if args.clean or args.build or args.auto_binding:
         if args.clean:
@@ -15,7 +15,7 @@ def main(args, call_dir: str, package_dir: str):
 
         if args.auto_binding:
             # Make the content of the new binding file
-            content = auto_bindings(call_dir, package_dir)
+            content = auto_bindings(call_dir, pycpp_location)
 
             # move the current into backup
             move_to_backup(__BINDING_PATH__)
@@ -34,15 +34,15 @@ def main(args, call_dir: str, package_dir: str):
     elif args.module or args.component or args.header:
         if args.module != "":
             print("Creating new artifacts")
-            create_module(call_dir, package_dir, args.module)
+            create_module(call_dir, pycpp_location, args.module)
 
         elif args.component != "":
             print("Creating new artifacts")
-            add_component(call_dir, package_dir, args.component)
+            add_component(call_dir, pycpp_location, args.component)
 
         elif args.header != "":
             print("Creating new artifacts")
-            add_component(call_dir, package_dir, args.header, True)
+            add_component(call_dir, pycpp_location, args.header, True)
     
     # Else (update the config)
     else:

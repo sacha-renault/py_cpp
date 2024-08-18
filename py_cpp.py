@@ -5,11 +5,11 @@ import os
 call_dir = os.getcwd()
 
 # Where the package is located
-package_dir = os.path.dirname(__file__)
+pycpp_location = os.path.dirname(__file__)
 
 # Then import sys
 import sys
-sys.path.insert(0, package_dir)
+sys.path.insert(0, pycpp_location)
 
 # Other imports
 import argparse
@@ -29,6 +29,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     try:
-        main(args, call_dir, package_dir)
+        main(args, call_dir, pycpp_location)
     except Exception as e:
         print(f"Script terminated with error : {e}")
