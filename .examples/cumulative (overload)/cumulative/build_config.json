@@ -1,0 +1,8 @@
+{
+    "name": "cumulative",
+    "version": "0.1",
+    "openmp": 0,
+    "extra_compile_args": null,
+    "extra_link_args": null,
+    "include_dirs": ["/usr/include/eigen3"]
+}
