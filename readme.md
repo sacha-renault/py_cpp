@@ -82,8 +82,14 @@ Except --module that can be called from anywhere to create a new module, all cmd
 | `--auto`         | Sets flag to `True` | `False` | Enables both `auto_binding` and `auto_hints`   |
 | `--build`        | Sets flag to `True` | `False` | Builds the project                             |
 
-**Note:** Build arguments **do stack**. For example, running `pycpp --clean --auto_binding --auto_hints --build` will execute all these actions sequentially. However, actions are always executed in the following order: **clean > auto_binding > auto_hints > build**, regardless of the order in which they are specified.
-**Note:** To use any of `auto`, you need to install clang : [clang | https://pypi.org/project/clang/]. The version of clang you install must match the libclang library you installed previously.
+- **Note:** Build arguments **do stack**. For example, running `pycpp --clean --auto_binding --auto_hints --build` will execute all these actions sequentially. However, actions are always executed in the following order: **clean > auto_binding > auto_hints > build**, regardless of the order in which they are specified.
+- **Note:** To use any of `auto`, you need to install clang : [clang | https://pypi.org/project/clang/]. The version of clang you install must match the libclang library you installed previously. Then, you need to setup the path of the lib for clang.cindex :
+
+```sh
+python
+>>> from clang.cindex import Config
+>>> Config.set_library_file("path/to/the/library")
+```
 
 ## Writing cpp code
 
