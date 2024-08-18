@@ -1,28 +1,34 @@
 import tempfile
-from .utils import clean, create_module, add_component, safe_list_extend
+from .utils import clean, create_module, add_component, safe_list_extend, move_to_backup
 from .build import build
 from .openmp import has_openmp, get_openmp_flags
 from .configuration import Config
-from .data import __CONFIG_FILE_NAME__
+from .data import __CONFIG_FILE_NAME__, __BINDING_PATH__
 from .auto_binding.create_binding import auto_bindings
 
 def main(args, call_dir: str, package_dir: str):
     # First check if build or clean 
-    if args.clean or args.build or args.auto_build:
+    if args.clean or args.build or args.auto_binding:
         if args.clean:
             print("Cleaning the build environment")
             clean()
 
+        if args.auto_binding:
+            # Make the content of the new binding file
+            content = auto_bindings(call_dir, package_dir)
+
+            # move the current into backup
+            move_to_backup(__BINDING_PATH__)
+
+            # write into a new binding file
+            with open(__BINDING_PATH__, "w+") as file:
+                file.write(content)
+
         if args.build:
             print("Building the project")
-            build(call_dir, "binding.cpp")
+            build(call_dir, __BINDING_PATH__)
         
-        elif args.auto_build:
-            content = auto_bindings(call_dir, package_dir)
-            with tempfile.NamedTemporaryFile('w+', suffix=".cpp", delete=True, dir='.') as tmp: 
-                tmp.write(content)
-                tmp.seek(0)
-                build(call_dir, tmp.name)
+        
 
     # Else (because cant add a module after build)
     elif args.module or args.component or args.header:
