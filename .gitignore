@@ -3,3 +3,4 @@ test
 *.so
 *.o
 .vscode
+.backup
