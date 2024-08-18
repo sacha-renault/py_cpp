@@ -24,7 +24,7 @@ if __name__ == "__main__":
     parser.add_argument("--header", default="", help="create new header within the module with the specified name")
     parser.add_argument("--setopenmp", action="store_true", help="Setopenmp to available")
     parser.add_argument("--setversion", default="", help="Change version of package")
-    parser.add_argument("--auto_build", action="store_true", help="Auto make bindings")
+    parser.add_argument("--auto_binding", action="store_true", help="Auto make bindings")
 
     args = parser.parse_args()
 
