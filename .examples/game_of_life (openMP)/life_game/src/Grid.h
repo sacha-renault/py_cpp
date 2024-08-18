@@ -19,8 +19,6 @@ public:
     // functional
     void next();
     void next(int numSteps);
-
-    int func1();
 };
 
 

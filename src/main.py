@@ -1,10 +1,11 @@
-import tempfile
+from glob import glob
 from .utils import clean, create_module, add_component, safe_list_extend, move_to_backup
 from .build import build
 from .openmp import has_openmp, get_openmp_flags
 from .configuration import Config
 from .data import __CONFIG_FILE_NAME__, __BINDING_PATH__
 from .auto_binding.create_binding import auto_bindings
+from .auto_binding.create_pyi import auto_hints
 
 def main(args, call_dir: str, pycpp_location: str):
     # First check if build or clean 
@@ -22,6 +23,20 @@ def main(args, call_dir: str, pycpp_location: str):
 
             # write into a new binding file
             with open(__BINDING_PATH__, "w+") as file:
+                file.write(content)
+
+        if args.auto_hints:
+            # Make the content of the new binding file
+            content = auto_hints(call_dir, pycpp_location)
+
+            # find pyi file
+            pyi_file = glob("*.pyi")[0]
+
+            # move the current into backup
+            move_to_backup(pyi_file)
+
+            # write into a new binding file
+            with open(pyi_file, "w+") as file:
                 file.write(content)
 
         if args.build:
