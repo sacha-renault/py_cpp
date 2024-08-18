@@ -26,8 +26,15 @@ if __name__ == "__main__":
     parser.add_argument("--setversion", default="", help="Change version of package")
     parser.add_argument("--auto_binding", action="store_true", help="Auto make bindings")
     parser.add_argument("--auto_hints", action="store_true", help="Auto make hints (pyi)")
+    parser.add_argument("--auto", action="store_true", help="Enable both auto_binding and auto_hints")
 
+    # Parse
     args = parser.parse_args()
+
+    # Handle auto
+    if args.auto:
+        args.auto_binding = True
+        args.auto_hints = True
 
     try:
         main(args, call_dir, pycpp_location)
