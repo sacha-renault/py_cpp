@@ -9,8 +9,6 @@ from clang.cindex import CursorKind
 from ..data import __HEADERS_PATH__
 from .types import CxxClass, CxxFunction, CxxTemplateFunction, CxxConstructor
 
-clang.cindex.Config.set_library_file('/usr/lib/llvm-12/lib/libclang-12.so')  # Set this to your actual path
-
 
 def parse_func(node):
     if (node.kind == CursorKind.FUNCTION_DECL or 

@@ -83,3 +83,10 @@ Except --module that can be called from anywhere to create a new module, all cmd
 | `--build`        | Sets flag to `True` | `False` | Builds the project                             |
 
 **Note:** Build arguments **do stack**. For example, running `pycpp --clean --auto_binding --auto_hints --build` will execute all these actions sequentially. However, actions are always executed in the following order: **clean > auto_binding > auto_hints > build**, regardless of the order in which they are specified.
+**Note:** To use any of `auto`, you need to install clang : [clang | https://pypi.org/project/clang/]. The version of clang you install must match the libclang library you installed previously.
+
+## Writing cpp code
+
+- /!\ Template functions aren't supported as interface, you can use it iternally but you need to wrap it in normal function to expose in bindings (see .example/cumulative (overload)).
+- functions and classes whose name starts with "\_" are considered as internal and will not be exposed in bindings or the interface pyi file.
+- Operator not supported yet.
