@@ -29,7 +29,7 @@ class CxxTemplateFunction(CxxFunction):
                  signature=None,
                  return_type=None) -> None:
         template, non_template = split_template_normal(signature)
-        super().__init__(node, name, non_template, signature, return_type)
+        super().__init__(node, name, non_template, return_type)
         self.template_param = template
     
     def __str__(self) -> str:

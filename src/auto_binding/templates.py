@@ -69,6 +69,8 @@ class HintTemplate(TemplateBase):
         if self.return_type:
             result += f" -> {self.return_type}"
         result += ": ..."
-        if not is_method:
-            result = "m" + result + ";"
-        return indent + result + "\n"
+
+        result = indent + result + "\n"
+        if self.is_overload:
+            result = f"{indent}@overload\n{result}"
+        return result

@@ -86,6 +86,7 @@ def get_function_hints(functions: List[CxxFunction],
             raise ValueError(f"NOT A KNOWN TYPE : {type(func)}")
         
         func_binding += template.render_as(render_arg, indent)
+        func_binding += "\n"
         
         
     func_binding += "\n\n" # let some space after functino bindings are done
