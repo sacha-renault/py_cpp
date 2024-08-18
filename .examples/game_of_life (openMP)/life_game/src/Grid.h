@@ -23,10 +23,5 @@ public:
     int func1();
 };
 
-template <typename T1, typename T2>
-int function123(const T1& arg1, T2* arg2);
-
-int function321(const Eigen::MatrixXi<int> & arg1, int* arg2);
-
 
 

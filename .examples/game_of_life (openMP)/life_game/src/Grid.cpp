@@ -70,9 +70,3 @@ void GameOfLife::setPattern(int rOffset, int cOffset, const Eigen::MatrixXi& pat
         }
     }
 }
-
-
-template int function123(const int& arg1, int* arg2);
-template int function123(const float& arg1, int* arg2);
-template int function123(const int& arg1, float* arg2);
-template int function123(const float& arg1, float* arg2);
