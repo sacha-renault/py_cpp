@@ -13,30 +13,33 @@ clang.cindex.Config.set_library_file('/usr/lib/llvm-12/lib/libclang-12.so')  # S
 
 
 def parse_func(node):
-        if (node.kind == CursorKind.FUNCTION_DECL or 
-            node.kind == CursorKind.CXX_METHOD):
+    if (node.kind == CursorKind.FUNCTION_DECL or 
+        node.kind == CursorKind.CXX_METHOD):
 
-            # Get function
-            func = CxxFunction(
-                node,
-                node.spelling, 
-                [list(param.get_tokens()) for param in node.get_arguments()])
-            
-        elif node.kind == node.kind == CursorKind.CONSTRUCTOR:
-            func = CxxConstructor(
-                node,
-                node.spelling, 
-                [list(param.get_tokens()) for param in node.get_arguments()])
+        # Get function
+        func = CxxFunction(
+            node,
+            node.spelling, 
+            [list(param.get_tokens()) for param in node.get_arguments()], # Signature
+            node.result_type)
         
-        elif node.kind == CursorKind.FUNCTION_TEMPLATE:
-            func = CxxTemplateFunction(
-                node,
-                node.spelling, 
-                [list(param.get_tokens()) for param in node.get_children()])
-        else:
-            raise ValueError("Unknown function kind")
-        
-        return func
+    elif node.kind == node.kind == CursorKind.CONSTRUCTOR:
+        func = CxxConstructor(
+            node,
+            node.spelling, 
+            [list(param.get_tokens()) for param in node.get_arguments()], # Signature
+            node.result_type)
+    
+    elif node.kind == CursorKind.FUNCTION_TEMPLATE:
+        func = CxxTemplateFunction(
+            node,
+            node.spelling, 
+            [list(param.get_tokens()) for param in node.get_children()], # Signature
+            node.result_type)
+    else:
+        raise ValueError("Unknown function kind")
+    
+    return func
 
 
 def extract_all(header_file, *args) -> Tuple[List[CxxFunction], List[CxxClass]]:

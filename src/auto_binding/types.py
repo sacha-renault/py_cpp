@@ -7,10 +7,11 @@ class CxxBase:
         return self.node.location.file.name
 
 class CxxFunction(CxxBase):
-    def __init__(self, node, name: str, signature = None) -> None:
+    def __init__(self, node, name: str, signature = None, return_type = None) -> None:
         self.node = node
         self.name = name
         self.signature = signature if signature is not None else []
+        self.return_type = return_type
     
     def __str__(self) -> str:
         return f"<Function: {self.name}({self.get_signature_string()})>"
@@ -25,9 +26,10 @@ class CxxTemplateFunction(CxxFunction):
     def __init__(self, 
                  node,
                  name: str, 
-                 signature=None) -> None:
+                 signature=None,
+                 return_type=None) -> None:
         template, non_template = split_template_normal(signature)
-        super().__init__(node, name, non_template)
+        super().__init__(node, name, non_template, signature, return_type)
         self.template_param = template
     
     def __str__(self) -> str:

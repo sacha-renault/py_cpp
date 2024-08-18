@@ -67,17 +67,20 @@ def get_function_binding(functions: List[CxxFunction],
         cpp_ref_name = f"&{src_or_namespace}{func.name}"
 
         # init a binding template for the function
-        template = BindingTemplate()
+        template = BindingTemplate(py_f_name, 
+            cpp_ref_name, 
+            func.get_signature_string(), 
+            func.return_type)
 
         # If template idk what to do still
         if isinstance(func, CxxTemplateFunction):
             # TODO
             warnings.warn("Template function aren't supported yet.")
+            continue
 
         # If constructor we call py::init
         elif isinstance(func, CxxConstructor):
-            template.set_constructor(func.get_signature_string())
-            func_binding += template.render_as(render_arg, indent)
+            template.set_constructor()
 
         # TODO
         # Detect when operator 
@@ -87,15 +90,13 @@ def get_function_binding(functions: List[CxxFunction],
 
         # else simple function
         elif isinstance(func, CxxFunction):
-            if name_count[func.name] > 1: # then overload
-                template.set_overloaded_function(py_f_name, cpp_ref_name, func.get_signature_string())
-            else:
-                template.set_function(py_f_name, cpp_ref_name)
-            func_binding += template.render_as(render_arg, indent)
+            if name_count[func.name] > 1:
+                template.set_overload()
 
         else:
-            raise ValueError("NOT A KNOWN TYPE")
+            raise ValueError(f"NOT A KNOWN TYPE : {type(func)}")
         
+        func_binding += template.render_as(render_arg, indent)
         
     func_binding += "\n\n" # let some space after functino bindings are done
     return func_binding
