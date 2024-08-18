@@ -1,3 +1,5 @@
+# JUST NOTICED THERE IS A SIMILAR REPOSITORY (much better) that does same : https://pthom.github.io/litgen/litgen_book/00_00_intro.html
+
 # PyCpp
 
 ## Purpose
