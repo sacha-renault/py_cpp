@@ -1,9 +1,10 @@
 import os
 from typing import List, Optional
 import shutil
+from datetime import datetime
 
 from .configuration import Config
-from .data import __BINDING_INCLUDES__, __CONFIG_FILE_NAME__
+from .data import __BINDING_INCLUDES__, __CONFIG_FILE_NAME__, __BINDING_PATH__
 
 def try_remove_dir(dir_path: str) -> None:
     if os.path.isdir(dir_path):
@@ -105,11 +106,11 @@ def add_component(call_dir, package_dir, component_name, header_only = False):
         raise ValueError("Component already exist")
 
     # Open binding to add a new dependency
-    with open("binding.cpp", "r") as file:
+    with open(__BINDING_PATH__, "r") as file:
         content = file.read()
 
     # add includes in in bindings
-    with open("binding.cpp", "w") as file:
+    with open(__BINDING_PATH__, "w") as file:
         include_statement = f"#include \"src/{component_name}.h\""
         new_content = content.replace(__BINDING_INCLUDES__, f"{include_statement}\n{__BINDING_INCLUDES__}")
         file.write(new_content)    
@@ -131,3 +132,20 @@ def safe_list_extend(base_list: Optional[List[str]], new_items: List[str]) -> Li
             if item not in base_list:
                 base_list.append(item)
         return base_list
+    
+def move_to_backup(file_name: str) -> None:
+    # first check if .backup folder exist
+    if not os.path.isdir(".backup"):
+        os.mkdir(".backup")
+    
+    # get date of now
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # remove ext of file
+    file_no_ext, ext = os.path.splitext(file_name)
+
+    # concatenate all
+    new_file_name = os.path.join(".backup", f"{file_no_ext}_{now}{ext}")
+
+    # move the file
+    shutil.move(file_name, new_file_name)
