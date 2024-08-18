@@ -96,10 +96,10 @@ def get_func_and_classes():
         abs_files = [os.path.abspath(file) for file in files]
 
         # filter functions that comes from the files
-        functions = [func for func in functions if func.path in abs_files]
+        functions = [func for func in functions if func.path in abs_files and not func.name.startswith("_")]
 
         # filter classes that comes from the files
-        classes = [class_ for class_ in classes if class_.path in abs_files]
+        classes = [class_ for class_ in classes if class_.path in abs_files and not class_.name.startswith("_")]
 
     return functions, classes
 
