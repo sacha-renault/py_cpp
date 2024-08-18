@@ -1,6 +1,12 @@
+import os
+import tempfile
+from glob import glob
 from typing import List, Tuple
+
 import clang.cindex
 from clang.cindex import CursorKind
+
+from ..data import __HEADERS_PATH__
 from .types import CxxClass, CxxFunction, CxxTemplateFunction, CxxConstructor
 
 clang.cindex.Config.set_library_file('/usr/lib/llvm-12/lib/libclang-12.so')  # Set this to your actual path
@@ -65,5 +71,32 @@ def extract_all(header_file, *args) -> Tuple[List[CxxFunction], List[CxxClass]]:
             visit_node(child)
 
     visit_node(translation_unit.cursor)
+    return functions, classes
+
+def get_func_and_classes():
+    with tempfile.NamedTemporaryFile('w+', suffix=".cpp", delete=True, dir='.') as tmp:
+        # Get all files
+        files = glob(__HEADERS_PATH__)
+
+        # Set includes
+        for file in files:
+            path = os.path.normpath(file)
+            tmp.write(f"#include \"{path}\"\n")
+
+        # Seek back to start
+        tmp.seek(0)
+
+        # Into parser
+        functions, classes = extract_all(tmp.name, '-std=c++17')
+
+        # Get abs path
+        abs_files = [os.path.abspath(file) for file in files]
+
+        # filter functions that comes from the files
+        functions = [func for func in functions if func.path in abs_files]
+
+        # filter classes that comes from the files
+        classes = [class_ for class_ in classes if class_.path in abs_files]
+
     return functions, classes
 
