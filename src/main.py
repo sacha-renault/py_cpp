@@ -46,7 +46,7 @@ def main(args, call_dir: str, pycpp_location: str):
         
 
     # Else (because cant add a module after build)
-    elif args.module or args.component or args.header:
+    else:
         if args.module != "":
             print("Creating new artifacts")
             create_module(call_dir, pycpp_location, args.module)
@@ -59,12 +59,10 @@ def main(args, call_dir: str, pycpp_location: str):
             print("Creating new artifacts")
             add_component(call_dir, pycpp_location, args.header, True)
     
-    # Else (update the config)
-    else:
-        config = Config.load(__CONFIG_FILE_NAME__)
+        # Else (update the config)
+        elif args.setopenmp:
+            config = Config.load(__CONFIG_FILE_NAME__)
 
-        # Set openmp
-        if args.setopenmp:
             if not has_openmp():
                 raise Exception("OPEN MP NOT AVAILABLE")
             else:
@@ -74,6 +72,7 @@ def main(args, call_dir: str, pycpp_location: str):
                 config.save(__CONFIG_FILE_NAME__)
         
         elif args.setversion:
+            config = Config.load(__CONFIG_FILE_NAME__)
             config.version = args.setversion
             config.save(__CONFIG_FILE_NAME__)
         

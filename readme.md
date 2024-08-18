@@ -58,12 +58,28 @@ pycpp --header my_header # add a new header
 
 ## Arguments
 
-| Argument       | Action             | Default | Description                                                                      | Callable From   |
-| -------------- | ------------------ | ------- | -------------------------------------------------------------------------------- | --------------- |
-| `--clean`      | set flag to `True` | `False` | Clean the build environment                                                      | Inside a module |
-| `--build`      | set flag to `True` | `False` | Build the project                                                                | Inside a module |
-| `--module`     | N/A                | `""`    | Create a new module with the specified name                                      | Anywhere        |
-| `--component`  | N/A                | `""`    | Create a new component within the module with the specified name                 | Inside a module |
-| `--header`     | N/A                | `""`    | Create a new header within the module with the specified name                    | Inside a module |
-| `--setopenmp`  | set flag to `True` | `False` | Set OpenMP to available. If OpenMP isn't available, an exception will be raised. | Inside a module |
-| `--setversion` | N/A                | `""`    | Change the version of the package                                                | Inside a module |
+Except --module that can be called from anywhere to create a new module, all cmd must be called from inside of a module
+
+### Module Arguments
+
+| Argument       | Action              | Default | Description                                                     |
+| -------------- | ------------------- | ------- | --------------------------------------------------------------- |
+| `--module`     | N/A                 | `""`    | Creates a new module with the specified name                    |
+| `--component`  | N/A                 | `""`    | Creates a new component within a module with the specified name |
+| `--header`     | N/A                 | `""`    | Creates a new header within a module with the specified name    |
+| `--setopenmp`  | Sets flag to `True` | `False` | Enables OpenMP. Raises an exception if OpenMP isn't available.  |
+| `--setversion` | N/A                 | `""`    | Changes the version of the package                              |
+
+**Note:** Module arguments **do not stack**. For instance, using `pycpp --module my_module --component my_component` will ignore the `--component` argument.
+
+### Build Arguments
+
+| Argument         | Action              | Default | Description                                    |
+| ---------------- | ------------------- | ------- | ---------------------------------------------- |
+| `--clean`        | Sets flag to `True` | `False` | Cleans the build environment                   |
+| `--auto_binding` | Sets flag to `True` | `False` | Automatically generates the `binding.cpp` file |
+| `--auto_hints`   | Sets flag to `True` | `False` | Automatically generates the `.pyi` file        |
+| `--auto`         | Sets flag to `True` | `False` | Enables both `auto_binding` and `auto_hints`   |
+| `--build`        | Sets flag to `True` | `False` | Builds the project                             |
+
+**Note:** Build arguments **do stack**. For example, running `pycpp --clean --auto_binding --auto_hints --build` will execute all these actions sequentially. However, actions are always executed in the following order: **clean > auto_binding > auto_hints > build**, regardless of the order in which they are specified.
